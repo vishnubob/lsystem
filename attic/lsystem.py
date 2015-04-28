@@ -1,5 +1,4 @@
 import cairo
-import rsvg
 import math
 import colorsys
 
@@ -114,7 +113,7 @@ def plant(icnt):
             turtle.pop_context()
 
 
-plant(6)
+koch(6)
 """
 for x in range(5):
     print x
