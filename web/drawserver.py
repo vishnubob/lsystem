@@ -9,8 +9,27 @@ from lsystem import *
 
 app = Flask(__name__)
 
+class RandomWords(object):
+    Words = None
+    Dictonary = "/usr/share/dict/words"
+
+    @classmethod
+    def load(cls):
+        if cls.Words == None:
+            f = open(cls.Dictonary)
+            cls.Words = f.readlines()
+
+    @classmethod
+    def __call__(cls):
+        cls.load()
+        return random.choice(cls.Words).strip().lower()
+
+random_word = RandomWords.__call__
+
 class TreeformRunner(object):
     def bootstrap(self):
+        self.seed_word = random_word()
+        random.seed(self.seed_word)
         self.profile = TreeFormProfile()
         self.treeform = TreeForm(self.profile)
 
