@@ -116,12 +116,11 @@ class TreeForm(object):
         return rule
 
     def random_axiom(self):
-        rule_length = self.profile.axiom_length
-        rule = []
-        for rule_cnt in range(rule_length):
-            token = random.choice(self.variable_tokens)
-            rule.append(token)
-        return rule
+        counters = {}
+        counters["rule_count"] = self.profile.axiom_length
+        counters["depth"] = self.profile.rule_depth_count
+        tokens = self.variable_tokens + [self.push_token, self.pop_token]
+        return self.random_rule(tokens=tokens, counters=counters)
 
     def random_rules(self):
         self.rules = {}
@@ -145,9 +144,9 @@ class TreeFormProfile(object):
         "min_variable_count": 3,
         "max_rotation_count": 1,
         "min_rotation_count": 1,
-        "max_move_count": 2,
+        "max_move_count": 1,
         "min_move_count": 0,
-        "max_draw_count": 2,
+        "max_draw_count": 1,
         "min_draw_count": 1,
         "max_rotation": 2 * math.pi,
         "min_rotation": 0,
@@ -159,7 +158,7 @@ class TreeFormProfile(object):
         "min_move_length": 1,
         "max_draw_length": 4,
         "min_draw_length": 1,
-        "max_axiom_length": 4,
+        "max_axiom_length": 10,
         "min_axiom_length": 1,
         "max_rule_depth_count": 10,
         "min_rule_depth_count": 0,
@@ -189,7 +188,7 @@ class TreeFormProfile(object):
             raise AttributeError, "Unknown profile attribute: %s" % attr
 
     def normal_rotation(self):
-        degrees = [36, 45, 120]
+        degrees = [360.0 / x for x in range(3, 9)]
         rot = random.choice(degrees)
         return math.radians(rot)
 
@@ -201,13 +200,17 @@ class TreeFormCanvas(object):
     def __init__(self, treeform):
         self.treeform = treeform
 
-    def render(self, iterations=5, seed=None):
+    def render(self, iterations=5, seed=None, limit=None):
         if seed != None:
             random.seed(seed)
         canvas = LCanvas(cursor=(500, 500), angle=math.radians(-90))
         ls = LSystem(self.treeform.rules)
         txt = ls.solve(axiom=iter(self.treeform.axiom), iterations=iterations)
         for token in txt:
+            if limit != None:
+                limit -= 1
+                if limit < 0:
+                    break
             token = self.treeform.token_map[token]
             if isinstance(token, RotationToken):
                 canvas.rotate(token.angle)

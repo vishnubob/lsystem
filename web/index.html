@@ -14,12 +14,12 @@
         <script src="static/js/bootstrap.min.js"></script>
         <script src="static/js/lsystem.js"></script>
     </head>
-    <body>
-        <button type="button" class="btn btn-lg btn-default" onclick="pull_draw_data()">Randomize</button>
-        <button type="button" class="btn btn-lg btn-default" onclick="modal_rules()">LSystem</button>
-
-        <div id="draw-shapes">
-        </div>
-
+    <body onload="get_lsystem();">
+        <span>
+            <button type="button" class="btn btn-lg btn-default" onclick="get_lsystem()">Randomize</button>
+            <button type="button" class="btn btn-lg btn-default" onclick="save_lsystem()">Save</button>
+            <span id="lsystem-title"></span>
+        </span>
+        <div id="draw-shapes"> </div>
     </body>
 </html>

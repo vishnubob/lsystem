@@ -6,6 +6,7 @@ class Style(dict):
 
 class Tag(dict):
     Name = "__tag__"
+    Header = None
 
     def __init__(self, style=None, **attrs):
         if style != None:
@@ -21,6 +22,8 @@ class Tag(dict):
             ret = "<%s %s>\n%s\n</%s>" % (self.Name, attrs, children, self.Name)
         else:
             ret = "<%s %s />" % (self.Name, attrs)
+        if self.Header != None:
+            ret = self.Header + ret
         return ret
     
     def append(self, child):
@@ -74,6 +77,9 @@ class Tag(dict):
 class Rect(Tag):
     Name = "rect"
 
+class Group(Tag):
+    Name = "g"
+
 class Path(Tag):
     Name = "path"
 
@@ -110,10 +116,12 @@ class Path(Tag):
 
 class SVG(Tag):
     Name = "svg"
+    Header = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'
 
     def __init__(self, **kw):
         kw["xmlns"] = "http://www.w3.org/2000/svg" 
         kw["xmlns:xlink"] = "http://www.w3.org/1999/xlink"
+        kw["version"] = "1.1"
         super(SVG, self).__init__(**kw)
 
     def save(self, svgfn):
